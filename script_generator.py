@@ -64,6 +64,56 @@ def chapter_to_script(chapter, template_type="网剧", location="未知地点", 
     # 合并模板字段
     script.update(template_fields)
     return script
+# 新增函数
+def recommend_camera(content_lines):
+    """
+    根据内容自动生成镜头推荐
+    简单规则：
+    - 如果包含动作或惊讶的关键词，增加特写
+    - 否则默认中景和全景
+    """
+    camera_list = []
+
+    action_keywords = ["睁开", "跑", "叫", "喊", "发出声音", "惊讶", "发现"]
+
+    # 遍历每行内容，如果出现动作词，加入特写
+    for line in content_lines:
+        for keyword in action_keywords:
+            if keyword in line and "特写" not in camera_list:
+                camera_list.append("特写")
+
+    # 默认加入中景和全景
+    if "中景" not in camera_list:
+        camera_list.append("中景")
+    if "全景" not in camera_list:
+        camera_list.append("全景")
+
+    return camera_list
+
+# 修改 chapter_to_script 调用
+def chapter_to_script(chapter, template_type="网剧", location="未知地点", time_val="未知时间", characters=None):
+    content = chapter.get("content", [])
+    title = generate_title(chapter)
+    chapter["title"] = title
+
+    if characters is None:
+        characters = []
+
+    template_fields = get_template(template_type)
+
+    script = {
+        "chapter": chapter.get("chapter", ""),
+        "title": chapter["title"],
+        "location": location,
+        "time": time_val,
+        "characters": characters,
+        "content": content,
+        # 调用镜头推荐函数
+        "camera": recommend_camera(content)
+    }
+
+    script.update(template_fields)
+    return script
 def detect_location(content_lines):
     """
     场景识别
