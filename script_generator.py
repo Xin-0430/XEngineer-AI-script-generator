@@ -1,5 +1,5 @@
-# script_generator.py
 import yaml
+from templates import get_template
 
 def generate_title(chapter):
     content = chapter.get("content", [])
@@ -9,18 +9,25 @@ def generate_title(chapter):
             return line[:20]
     return "无标题"
 
-def chapter_to_script(chapter, location="未知地点", time_val="未知时间", characters=None):
-    """
-    将章节转换为完整剧本结构
-    """
+def extract_characters(content_lines):
+    # 简单角色提取示例
+    keywords = ["林夜", "系统", "张三", "李四"]
+    names = []
+    for line in content_lines:
+        for name in keywords:
+            if name in line and name not in names:
+                names.append(name)
+    return names
+
+def chapter_to_script(chapter, template_type="网剧", location="未知地点", time_val="未知时间", characters=None):
     content = chapter.get("content", [])
     title = generate_title(chapter)
     chapter["title"] = title
 
     if characters is None:
-        characters = []
+        characters = extract_characters(content)
 
-    return {
+    script = {
         "chapter": chapter.get("chapter", ""),
         "title": chapter["title"],
         "location": location,
@@ -28,6 +35,10 @@ def chapter_to_script(chapter, location="未知地点", time_val="未知时间",
         "characters": characters,
         "content": content
     }
+
+    template = get_template(template_type)
+    script.update(template)
+    return script
 
 def save_yaml(scripts, filename="output.yaml"):
     with open(filename, "w", encoding="utf-8") as f:
