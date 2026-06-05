@@ -15,5 +15,8 @@ for chapter in chapters:
     scripts.append(script)
 
 # 保存 YAML
+
 save_yaml(scripts)
+
 print("剧本已生成：output.yaml")
+print("镜头推荐功能已启用")
