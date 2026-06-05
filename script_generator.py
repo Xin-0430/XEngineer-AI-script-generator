@@ -45,6 +45,7 @@ def chapter_to_script(chapter, template_type="网剧", location="未知地点", 
     # 如果没有传 characters 参数，自动识别
     if characters is None:
         characters = extract_characters(content)
+        location = detect_location(content)
 
     template_fields = get_template(template_type)
     dialogues = extract_dialogues(content)
@@ -61,6 +62,31 @@ def chapter_to_script(chapter, template_type="网剧", location="未知地点", 
     # 合并模板字段
     script.update(template_fields)
     return script
+def detect_location(content_lines):
+    """
+    场景识别
+    """
+
+    location_keywords = {
+        "教室": "教室",
+        "森林": "森林",
+        "医院": "医院",
+        "天台": "天台",
+        "咖啡馆": "咖啡馆",
+        "地铁": "地铁",
+        "学校": "学校",
+        "办公室": "办公室"
+    }
+
+    for line in content_lines:
+
+        for keyword in location_keywords:
+
+            if keyword in line:
+
+                return location_keywords[keyword]
+
+    return "未知地点"
 def extract_dialogues(content_lines):
     """
     简单台词提取器
