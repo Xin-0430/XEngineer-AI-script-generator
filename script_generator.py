@@ -1,221 +1,375 @@
-# script_generator.py
 import yaml
+import re
+
 from templates import get_template
 
+
+# =====================
+# 标题生成
+# =====================
+
 def generate_title(chapter):
-    """
-    自动生成章节标题
-    """
+
     content = chapter.get("content", [])
+
     for line in content:
         line = line.strip()
+
         if line:
             return line[:20]
+
     return "无标题"
 
-# 稳定版本角色库（PR4 推荐）
-CHARACTER_LIBRARY = [
-    "林夜",
-    "系统",
-    "张三",
-    "李四",
-    "王强"
-]
+
+# =====================
+# 角色识别
+# =====================
 
 def extract_characters(content_lines):
-    """
-    智能角色识别
-    从内容中匹配 CHARACTER_LIBRARY
-    """
+
     names = []
+
+    keywords = [
+        "林夜",
+        "系统",
+        "张三",
+        "李四"
+    ]
+
     for line in content_lines:
-        for character in CHARACTER_LIBRARY:
-            if character in line and character not in names:
-                names.append(character)
+
+        for name in keywords:
+
+            if name in line and name not in names:
+                names.append(name)
+
     return names
 
-def chapter_to_script(chapter, template_type="网剧", location="未知地点", time_val="未知时间", characters=None):
-    """
-    将章节转换为完整剧本结构
-    """
-    content = chapter.get("content", [])
-    title = generate_title(chapter)
-    chapter["title"] = title
 
-    # 如果没有传 characters 参数，自动识别
-    if characters is None:
-        characters = extract_characters(content)
-        location = detect_location(content)
-        emotion = detect_emotion(content)
+# =====================
+# 台词提取
+# =====================
 
-    template_fields = get_template(template_type)
-    dialogues = extract_dialogues(content)
-    script = {
-        "chapter": chapter.get("chapter", ""),
-        "title": chapter["title"],
-        "location": location,
-        "time": time_val,
-        "emotion": emotion,
-        "characters": characters,
-        "dialogues": dialogues,
-        "content": content
-    }
-
-    # 合并模板字段
-    script.update(template_fields)
-    return script
-# 新增函数
-def recommend_camera(content_lines):
-    """
-    根据内容自动生成镜头推荐
-    简单规则：
-    - 如果包含动作或惊讶的关键词，增加特写
-    - 否则默认中景和全景
-    """
-    camera_list = []
-
-    action_keywords = ["睁开", "跑", "叫", "喊", "发出声音", "惊讶", "发现"]
-
-    # 遍历每行内容，如果出现动作词，加入特写
-    for line in content_lines:
-        for keyword in action_keywords:
-            if keyword in line and "特写" not in camera_list:
-                camera_list.append("特写")
-
-    # 默认加入中景和全景
-    if "中景" not in camera_list:
-        camera_list.append("中景")
-    if "全景" not in camera_list:
-        camera_list.append("全景")
-
-    return camera_list
-
-# 修改 chapter_to_script 调用
-def chapter_to_script(chapter, template_type="网剧", location="未知地点", time_val="未知时间", characters=None):
-    content = chapter.get("content", [])
-    title = generate_title(chapter)
-    chapter["title"] = title
-
-    if characters is None:
-        characters = []
-
-    template_fields = get_template(template_type)
-
-    script = {
-        "chapter": chapter.get("chapter", ""),
-        "title": chapter["title"],
-        "location": location,
-        "time": time_val,
-        "characters": characters,
-        "content": content,
-        # 调用镜头推荐函数
-        "camera": recommend_camera(content)
-    }
-
-    script.update(template_fields)
-    return script
-def detect_location(content_lines):
-    """
-    场景识别
-    """
-
-    location_keywords = {
-        "教室": "教室",
-        "森林": "森林",
-        "医院": "医院",
-        "天台": "天台",
-        "咖啡馆": "咖啡馆",
-        "地铁": "地铁",
-        "学校": "学校",
-        "办公室": "办公室"
-    }
-
-    for line in content_lines:
-
-        for keyword in location_keywords:
-
-            if keyword in line:
-
-                return location_keywords[keyword]
-
-    return "未知地点"
-def detect_emotion(content_lines):
-    """
-    情绪分析
-    """
-
-    emotion_keywords = {
-        "愤怒": "愤怒",
-        "生气": "愤怒",
-
-        "开心": "开心",
-        "高兴": "开心",
-
-        "悲伤": "悲伤",
-        "难过": "悲伤",
-
-        "紧张": "紧张",
-
-        "害怕": "恐惧",
-        "恐惧": "恐惧",
-
-        "震惊": "震惊",
-        "吃惊": "震惊"
-    }
-
-    for line in content_lines:
-
-        for keyword in emotion_keywords:
-
-            if keyword in line:
-
-                return emotion_keywords[keyword]
-
-    return "平静"
 def extract_dialogues(content_lines):
-    """
-    简单台词提取器
-    """
 
     dialogues = []
 
-    current_speaker = None
+    speaker = None
 
     for line in content_lines:
 
         line = line.strip()
 
-        if "说道" in line:
-            current_speaker = line.replace("说道：", "")
+        if line.endswith("说道："):
 
-        elif "回答" in line:
-            current_speaker = line.replace("回答：", "")
+            speaker = line.replace("说道：", "")
 
-        elif "：“" in line:
-            parts = line.split("：“")
+        elif line.endswith("回答："):
 
-            if len(parts) == 2:
+            speaker = line.replace("回答：", "")
 
-                speaker = parts[0]
-
-                text = parts[1].replace("”", "")
-
-                dialogues.append({
-                    "speaker": speaker,
-                    "text": text
-                })
-
-        elif line.startswith("“") and current_speaker:
+        elif line.startswith("“") and speaker:
 
             dialogues.append({
-                "speaker": current_speaker,
-                "text": line.replace("“", "").replace("”", "")
+                "speaker": speaker,
+                "text": line.strip("“”")
             })
 
+            speaker = None
+
     return dialogues
-def save_yaml(scripts, filename="output.yaml"):
+
+
+# =====================
+# 场景识别
+# =====================
+
+def detect_location(content_lines):
+
+    locations = [
+        "教室",
+        "森林",
+        "医院",
+        "天台",
+        "地铁",
+        "咖啡馆",
+        "宫殿",
+        "学校"
+    ]
+
+    text = "".join(content_lines)
+
+    for loc in locations:
+
+        if loc in text:
+            return loc
+
+    return "未知地点"
+
+
+# =====================
+# 情绪分析
+# =====================
+
+def detect_emotion(content_lines):
+
+    text = "".join(content_lines)
+
+    emotions = {
+
+        "愤怒": [
+            "愤怒",
+            "生气",
+            "暴怒"
+        ],
+
+        "开心": [
+            "开心",
+            "高兴",
+            "兴奋"
+        ],
+
+        "悲伤": [
+            "伤心",
+            "难过",
+            "流泪"
+        ],
+
+        "紧张": [
+            "紧张",
+            "害怕"
+        ],
+
+        "震惊": [
+            "震惊",
+            "惊讶"
+        ]
+    }
+
+    for emotion, words in emotions.items():
+
+        for word in words:
+
+            if word in text:
+                return emotion
+
+    return "平静"
+
+
+# =====================
+# 镜头推荐
+# =====================
+
+def recommend_camera(content_lines):
     """
-    将生成的剧本列表保存为 YAML 文件
+    智能镜头推荐系统
     """
-    with open(filename, "w", encoding="utf-8") as f:
-        yaml.dump(scripts, f, allow_unicode=True)
+
+    text = "".join(content_lines)
+
+    cameras = []
+
+    # ==================
+    # 情绪镜头
+    # ==================
+
+    if any(word in text for word in [
+        "愤怒",
+        "暴怒",
+        "生气",
+        "震惊",
+        "惊讶",
+        "害怕",
+        "紧张",
+        "恐惧"
+    ]):
+        cameras.append("特写")
+
+    # ==================
+    # 发现类镜头
+    # ==================
+
+    if any(word in text for word in [
+        "发现",
+        "看到",
+        "看见",
+        "出现",
+        "映入眼帘"
+    ]):
+        cameras.append("推镜")
+
+    # ==================
+    # 动作镜头
+    # ==================
+
+    if any(word in text for word in [
+        "奔跑",
+        "狂奔",
+        "逃跑",
+        "追赶",
+        "冲出"
+    ]):
+        cameras.append("跟拍")
+
+    # ==================
+    # 战斗镜头
+    # ==================
+
+    if any(word in text for word in [
+        "战斗",
+        "交手",
+        "厮杀",
+        "挥剑",
+        "攻击",
+        "对决"
+    ]):
+        cameras.append("快速切换")
+
+    # ==================
+    # 回忆镜头
+    # ==================
+
+    if any(word in text for word in [
+        "回忆",
+        "往事",
+        "曾经",
+        "小时候"
+    ]):
+        cameras.append("慢推")
+
+    # ==================
+    # 大场景镜头
+    # ==================
+
+    if any(word in text for word in [
+        "森林",
+        "城市",
+        "广场",
+        "学校",
+        "宫殿",
+        "高楼",
+        "山脉",
+        "大海",
+        "天空"
+    ]):
+        cameras.append("远景")
+
+    # ==================
+    # 对话镜头
+    # ==================
+
+    dialogue_count = 0
+
+    for line in content_lines:
+
+        if (
+            "说道" in line
+            or "回答" in line
+            or "问道" in line
+            or "喊道" in line
+        ):
+            dialogue_count += 1
+
+    if dialogue_count >= 2:
+        cameras.append("双人对话镜头")
+
+    # ==================
+    # 默认镜头
+    # ==================
+
+    if not cameras:
+        cameras.append("中景")
+
+    # 去重
+    cameras = list(dict.fromkeys(cameras))
+
+    return cameras
+
+
+# =====================
+# 主转换函数
+# =====================
+
+def chapter_to_script(
+
+        chapter,
+        template_type="动漫",
+        location=None,
+        time_val="未知时间"
+):
+
+    content = chapter.get("content", [])
+
+    title = generate_title(chapter)
+
+    characters = extract_characters(content)
+
+    dialogues = extract_dialogues(content)
+
+    if location is None:
+        location = detect_location(content)
+
+    emotion = detect_emotion(content)
+
+    camera = recommend_camera(content)
+
+    template_fields = get_template(
+        template_type
+    )
+
+    script = {
+
+        "chapter":
+            chapter.get("chapter", ""),
+
+        "title":
+            title,
+
+        "location":
+            location,
+
+        "time":
+            time_val,
+
+        "characters":
+            characters,
+
+        "emotion":
+            emotion,
+
+        "camera":
+            camera,
+
+        "dialogues":
+            dialogues,
+
+        "content":
+            content
+    }
+
+    script.update(template_fields)
+
+    return script
+
+
+# =====================
+# 保存YAML
+# =====================
+
+def save_yaml(
+        scripts,
+        filename="output.yaml"
+):
+
+    with open(
+            filename,
+            "w",
+            encoding="utf-8"
+    ) as f:
+
+        yaml.dump(
+            scripts,
+            f,
+            allow_unicode=True,
+            sort_keys=False
+        )
