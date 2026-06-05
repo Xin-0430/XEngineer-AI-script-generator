@@ -46,6 +46,7 @@ def chapter_to_script(chapter, template_type="网剧", location="未知地点", 
     if characters is None:
         characters = extract_characters(content)
         location = detect_location(content)
+        emotion = detect_emotion(content)
 
     template_fields = get_template(template_type)
     dialogues = extract_dialogues(content)
@@ -54,6 +55,7 @@ def chapter_to_script(chapter, template_type="网剧", location="未知地点", 
         "title": chapter["title"],
         "location": location,
         "time": time_val,
+        "emotion": emotion,
         "characters": characters,
         "dialogues": dialogues,
         "content": content
@@ -87,6 +89,39 @@ def detect_location(content_lines):
                 return location_keywords[keyword]
 
     return "未知地点"
+def detect_emotion(content_lines):
+    """
+    情绪分析
+    """
+
+    emotion_keywords = {
+        "愤怒": "愤怒",
+        "生气": "愤怒",
+
+        "开心": "开心",
+        "高兴": "开心",
+
+        "悲伤": "悲伤",
+        "难过": "悲伤",
+
+        "紧张": "紧张",
+
+        "害怕": "恐惧",
+        "恐惧": "恐惧",
+
+        "震惊": "震惊",
+        "吃惊": "震惊"
+    }
+
+    for line in content_lines:
+
+        for keyword in emotion_keywords:
+
+            if keyword in line:
+
+                return emotion_keywords[keyword]
+
+    return "平静"
 def extract_dialogues(content_lines):
     """
     简单台词提取器
