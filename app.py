@@ -522,8 +522,17 @@ if uploaded_file:
                         all_chars_set.add(c)
                 total_dialogues += len(s.get('dialogues', []))
                 em = s.get('emotion', '未知')
+                # 如果 em 是列表，取第一个元素
+                if isinstance(em, list):
+                    em = em[0] if em else '未知'
+                elif not isinstance(em, str):
+                    em = str(em)
                 emotions[em] = emotions.get(em, 0) + 1
                 loc = s.get('location', '未知')
+                if isinstance(loc, list):
+                    loc = loc[0] if loc else '未知'
+                elif not isinstance(loc, str):
+                    loc = str(loc)
                 locations[loc] = locations.get(loc, 0) + 1
             sc1, sc2, sc3, sc4 = st.columns(4)
             with sc1:
