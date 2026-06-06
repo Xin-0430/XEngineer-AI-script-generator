@@ -1,0 +1,14 @@
+  feature/auto-title[m
+  feature/auto-title-generator[m
+  feature/camera-recommendation[m
+  feature/chapter-parser[m
+  feature/character-extraction[m
+  feature/character-extractor[m
+  feature/dialogue-extractor[m
+  feature/emotion-analysis[m
+  feature/pr8-camera-generator[m
+  feature/scene-detection[m
+  feature/screenplay-template[m
+* [32mfeature/streamlit-ui[m
+  feature/yaml-enhanced[m
+  main[m

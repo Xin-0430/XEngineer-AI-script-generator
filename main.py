@@ -1,22 +1,23 @@
 from utils.parser import split_chapters
-from script_generator import chapter_to_script, save_yaml
+from script_generator import chapter_to_script
+# 在 main.py 或 config.py 中
 
-# 读取小说文本
-with open("data/example.txt", "r", encoding="utf-8") as f:
-    text = f.read()
+def generate_scripts_from_file(
+    text,
+    template_type
+):
 
-# 拆分章节
-chapters = split_chapters(text)
+    chapters = split_chapters(text)
 
-# 转换每一章为剧本
-scripts = []
-for chapter in chapters:
-    script = chapter_to_script(chapter, template_type="动漫")
-    scripts.append(script)
+    scripts = []
 
-# 保存 YAML
+    for chapter in chapters:
 
-save_yaml(scripts)
+        script = chapter_to_script(
+            chapter,
+            template_type
+        )
 
-print("剧本已生成：output.yaml")
-print("镜头推荐功能已启用")
+        scripts.append(script)
+
+    return scripts
