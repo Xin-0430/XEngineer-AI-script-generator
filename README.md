@@ -17,7 +17,7 @@
 👉 在线地址：
 
 ```text
-https://你的-streamlit-app-url
+https://xengineer-ai-script-generator.streamlit.app/
 ```
 
 🖥️ 系统截图
