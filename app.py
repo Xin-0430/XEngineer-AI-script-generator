@@ -210,7 +210,6 @@ st.markdown("""
     .sidebar-header { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; color: #667eea; }
     .stButton > button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 25px; padding: 0.6rem 1.5rem; font-weight: 600; transition: all 0.3s; }
     .stButton > button:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
-    .mode-badge-demo { background: #f0ad4e; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; }
     .mode-badge-ai { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; }
     .custom-divider { height: 3px; background: linear-gradient(90deg, #667eea, #764ba2, #667eea); margin: 1.5rem 0; border-radius: 3px; }
     .stTabs [data-baseweb="tab-list"] { gap: 2rem; }
@@ -251,53 +250,15 @@ st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
 with st.sidebar:
     st.markdown('<div class="sidebar-header">⚙️ 工具设置</div>', unsafe_allow_html=True)
 
-    # 运行模式选择
-    st.markdown("### 🎮 运行模式")
-    mode = st.radio(
-        "选择模式",
-        ["演示模式", "正式模式 (需API Key)"],
-        help="演示模式：仅角色识别使用AI，其他功能（镜头、情绪、场景）使用规则匹配"
+    # API Key 输入
+    st.markdown("### 🔑 API 设置")
+    api_key = st.text_input(
+        "DeepSeek API Key",
+        type="password",
+        placeholder="请输入你的 API Key",
+        help="前往 platform.deepseek.com 获取"
     )
-
-    # 演示模式说明（醒目提示）
-    if mode == "演示模式":
-        st.markdown("""
-        <div class="warning-box">
-            ⚠️ <strong>演示模式说明</strong><br>
-            • ✅ 角色识别：调用 AI（准确）<br>
-            • ⚡ 镜头建议：规则匹配<br>
-            • ⚡ 情绪分析：规则匹配<br>
-            • ⚡ 场景识别：规则匹配<br>
-            • ⚡ 台词提取：规则匹配<br>
-            <span style="font-size:12px; color:#856404;">💡 如需完整AI功能，请使用「正式模式」并输入API Key</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # 正式模式说明
-    if mode == "正式模式 (需API Key)":
-        st.markdown("""
-        <div class="info-box-blue">
-            🤖 <strong>正式模式说明</strong><br>
-            • ✅ 角色识别：调用 AI<br>
-            • ✅ 镜头建议：调用 AI<br>
-            • ✅ 情绪分析：调用 AI<br>
-            • ✅ 场景识别：调用 AI<br>
-            • ✅ 台词提取：调用 AI<br>
-            <span style="font-size:12px; color:#0c5460;">💡 需要有效的 DeepSeek API Key</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # API Key 输入（仅正式模式显示）
-    api_key = None
-    if mode == "正式模式 (需API Key)":
-        st.markdown("---")
-        api_key = st.text_input(
-            "🔑 DeepSeek API Key",
-            type="password",
-            placeholder="请输入你的 API Key",
-            help="前往 platform.deepseek.com 获取"
-        )
-        st.caption("💡 [获取 API Key](https://platform.deepseek.com/)")
+    st.caption("💡 [获取 API Key](https://platform.deepseek.com/)")
 
     st.markdown("---")
 
@@ -315,44 +276,19 @@ with st.sidebar:
     st.info(f"📌 {template_desc.get(template_type, '通用模板')}")
 
     st.markdown("---")
-
-    # 模式对比表
-    with st.expander("📊 演示模式 vs 正式模式"):
-        st.markdown("""
-| 功能 | 演示模式 | 正式模式 |
-|------|----------|----------|
-| 角色识别 | ✅ AI 识别 | ✅ AI 识别 |
-| 镜头建议 | ⚡ 规则匹配 | ✅ AI 生成 |
-| 情绪分析 | ⚡ 规则匹配 | ✅ AI 分析 |
-| 场景识别 | ⚡ 规则匹配 | ✅ AI 识别 |
-| 台词提取 | ⚡ 规则匹配 | ✅ AI 提取 |
-| 需要 API Key | ❌ 不需要 | ✅ 需要 |
-| 处理速度 | 快速 | 较慢（逐章） |
-| 效果质量 | 良好 | 专业 |
-        """)
-
-    st.markdown("---")
-    st.caption("🎬 v3.0")
+    st.caption("🎬 v3.0 — 正式版")
 
 # ============================================================
 # 主内容区域
 # ============================================================
 
-# 显示当前模式标签（带说明）
-if mode == "演示模式":
-    st.markdown("""
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-        <span class="mode-badge-demo">🎮 演示模式</span>
-        <span style="font-size: 12px; color: #856404;">⚠️ 仅角色识别使用AI，其他功能为规则匹配</span>
-    </div>
-    """, unsafe_allow_html=True)
-else:
-    st.markdown("""
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-        <span class="mode-badge-ai">🤖 正式模式</span>
-        <span style="font-size: 12px; color: #0c5460;">✅ 全部功能使用AI增强</span>
-    </div>
-    """, unsafe_allow_html=True)
+# 显示当前模式标签
+st.markdown("""
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+    <span class="mode-badge-ai">🤖 正式模式</span>
+    <span style="font-size: 12px; color: #0c5460;">✅ 全部功能使用 AI 增强（角色识别、镜头建议、情绪分析、场景识别、台词提取）</span>
+</div>
+""", unsafe_allow_html=True)
 
 st.markdown("")
 
@@ -383,51 +319,22 @@ if uploaded_file:
         st.text(text[:600] + ("..." if len(text) > 600 else ""))
 
     if st.button("🚀 开始转换", use_container_width=True):
-        if mode == "正式模式 (需API Key)" and not api_key:
+        if not api_key:
             st.error("❌ 请在侧边栏输入 DeepSeek API Key")
             st.stop()
 
-        if mode == "演示模式":
-            with st.spinner("📖 正在解析小说，生成剧本中...（AI识别角色）"):
-                scripts = generate_scripts_from_file(text, template_type)
-
-            # 确保演示模式输出正确的字段格式
-            for script in scripts:
-                if 'camera' not in script or not isinstance(script['camera'], list):
-                    script['camera'] = ["中景"]
-                if 'characters' not in script:
-                    script['characters'] = []
-                if 'dialogues' not in script:
-                    script['dialogues'] = []
-                if 'emotion' not in script:
-                    script['emotion'] = "平静"
-                if 'location' not in script:
-                    script['location'] = "未知"
-
-            total_chars = sum(len(s.get('characters', [])) for s in scripts)
-            total_dialogues = sum(len(s.get('dialogues', [])) for s in scripts)
-
-            st.markdown(f"""
-            <div class="success-box">
-                🎉 <strong>剧本生成完成！（演示模式）</strong><br>
-                共 {len(scripts)} 章，识别 {total_chars} 个角色，{total_dialogues} 段对话<br>
-                <span style="font-size:0.8rem;">⚠️ 演示模式：仅角色识别使用AI，其他功能为规则匹配</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        else:
-            with st.spinner("🤖 AI 正在逐章分析小说...（可能需要30-60秒）"):
-                scripts = ai_mode_convert(text, template_type, api_key)
-            if not scripts:
-                st.stop()
-            total_chars = sum(len(s.get('characters', [])) for s in scripts)
-            total_dialogues = sum(len(s.get('dialogues', [])) for s in scripts)
-            st.markdown(f"""
-            <div class="success-box">
-                🤖 <strong>剧本生成完成！（正式模式 - AI 增强）</strong><br>
-                共 {len(scripts)} 章，识别 {total_chars} 个角色，{total_dialogues} 段对话
-            </div>
-            """, unsafe_allow_html=True)
+        with st.spinner("🤖 AI 正在逐章分析小说...（可能需要30-60秒）"):
+            scripts = ai_mode_convert(text, template_type, api_key)
+        if not scripts:
+            st.stop()
+        total_chars = sum(len(s.get('characters', [])) for s in scripts)
+        total_dialogues = sum(len(s.get('dialogues', [])) for s in scripts)
+        st.markdown(f"""
+        <div class="success-box">
+            🤖 <strong>剧本生成完成！（正式模式 - AI 增强）</strong><br>
+            共 {len(scripts)} 章，识别 {total_chars} 个角色，{total_dialogues} 段对话
+        </div>
+        """, unsafe_allow_html=True)
 
         st.session_state['scripts'] = scripts
 
@@ -522,7 +429,6 @@ if uploaded_file:
                         all_chars_set.add(c)
                 total_dialogues += len(s.get('dialogues', []))
                 em = s.get('emotion', '未知')
-                # 如果 em 是列表，取第一个元素
                 if isinstance(em, list):
                     em = em[0] if em else '未知'
                 elif not isinstance(em, str):
@@ -577,7 +483,7 @@ if uploaded_file:
             st.markdown("---")
             report = f"""剧本统计报告
 生成时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-运行模式：{mode}
+运行模式：正式模式（AI 增强）
 模板类型：{template_type}
 总章节数：{len(st.session_state['scripts'])}
 总角色数：{len(all_chars_set)}
@@ -598,7 +504,7 @@ else:
     st.markdown("""
     <div class="info-box">
         📌 <strong>开始使用</strong><br>
-        1. 选择运行模式（演示模式无需 API Key）<br>
+        1. 在侧边栏输入 DeepSeek API Key<br>
         2. 上传 TXT 小说文件<br>
         3. 点击「开始转换」
     </div>
@@ -621,5 +527,5 @@ else:
 林晨无奈地叹了口气："好吧，只能接受了。"
     """, language="text")
 
-st.markdown('<div class="footer">🎬 AI 小说转剧本工具 | 演示模式 + 正式模式 | 支持多章节处理</div>',
+st.markdown('<div class="footer">🎬 AI 小说转剧本工具 | 正式模式 | 调用 DeepSeek API 生成专业剧本</div>',
             unsafe_allow_html=True)

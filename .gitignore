@@ -4,6 +4,6 @@ __pycache__/
 
 # PyCharm
 .idea/
-
+.streamlit/
 # Generated files
 output.yaml
