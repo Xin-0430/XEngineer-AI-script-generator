@@ -244,7 +244,7 @@ chapter_1:
         - 李明
         - 小雨
 
-      emotion: 温馨
+      emotion: 激动
 
       camera:
         - 中景
