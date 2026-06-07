@@ -1,0 +1,23 @@
+# pack-refs with: peeled fully-peeled sorted 
+71a902331aa3d0ff9abde1e81b34b12c98e95593 refs/heads/feature/camera-recommendation
+3d0b5d8abfe6e301eb0ecd1ba48c5d66bf2a12d7 refs/heads/feature/chapter-parser
+fe338020b94d094205d2a0150914dc3f128d42ed refs/heads/feature/character-extraction
+595a02a090670810911ddef1079ce2ed617ed7d2 refs/heads/feature/dialogue-extractor
+b174c01694dda26f11d9b5aafd26e914c7f47d03 refs/heads/feature/emotion-analysis
+ebb7839397c88a97c8c16beb96edab4dd0d80e8e refs/heads/feature/pr10-ai-engine
+2a76458d06f48c9bc2b07dcfda4bdab04be8a2dc refs/heads/feature/pr8-camera-generator
+7d8504b6b806c9b55eedde4491e4c419d2e61ff8 refs/heads/feature/scene-detection
+874a7d7a9742033921b5425ce2f984bee94be09d refs/heads/feature/screenplay-template
+d691f10c5e86fdc68997d12d0ccc3427ea33388b refs/heads/feature/streamlit-ui
+054d6a0d7b6449c8dcb2f19c4c2821c1e79357e7 refs/heads/feature/yaml-enhanced
+7ea264a887bec566c9cd9d9b666d1464c6fc6318 refs/heads/main
+3d0b5d8abfe6e301eb0ecd1ba48c5d66bf2a12d7 refs/pull/1/head
+ebb7839397c88a97c8c16beb96edab4dd0d80e8e refs/pull/10/head
+054d6a0d7b6449c8dcb2f19c4c2821c1e79357e7 refs/pull/2/head
+874a7d7a9742033921b5425ce2f984bee94be09d refs/pull/3/head
+fe338020b94d094205d2a0150914dc3f128d42ed refs/pull/4/head
+595a02a090670810911ddef1079ce2ed617ed7d2 refs/pull/5/head
+7d8504b6b806c9b55eedde4491e4c419d2e61ff8 refs/pull/6/head
+b174c01694dda26f11d9b5aafd26e914c7f47d03 refs/pull/7/head
+d691f10c5e86fdc68997d12d0ccc3427ea33388b refs/pull/8/head
+5ffe9804320b592f688a51d3a43f74d1e7488586 refs/pull/9/head
