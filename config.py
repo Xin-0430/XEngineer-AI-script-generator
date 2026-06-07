@@ -1,4 +1,3 @@
-# config.py
 import streamlit as st
 
 DEEPSEEK_API_KEY = st.secrets["DEEPSEEK_API_KEY"]
