@@ -19,6 +19,12 @@
 ```text
 https://xengineer-ai-script-generator.streamlit.app/
 ```
+ 🎬 Demo 演示视频
+
+📺 在线演示：
+
+[点击观看 Demo 视频](https://www.bilibili.com/video/BV1DtE46CEJe?vd_source=42a4e1a54b5c7bca2fa1103c1473d617)
+
 
 🖥️ 系统截图
 
